@@ -17,7 +17,7 @@ class SignatureViewController: NSViewController {
             EllipticCurveKeyPair.logger = { print($0) }
             let publicAccessControl = EllipticCurveKeyPair.AccessControl(protection: kSecAttrAccessibleAlwaysThisDeviceOnly, flags: [])
             let privateAccessControl = EllipticCurveKeyPair.AccessControl(protection: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly, flags: {
-                return EllipticCurveKeyPair.Device.hasSecureEnclave ? [.userPresence, .privateKeyUsage] : [.userPresence]
+                return EllipticCurveKeyPair.Device.hasSecureEnclave ? [.privateKeyUsage] : []
             }())
             let config = EllipticCurveKeyPair.Config(
                 publicLabel: "no.agens.sign.public",
