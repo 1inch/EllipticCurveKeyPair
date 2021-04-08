@@ -7,7 +7,6 @@
 //
 
 import Cocoa
-import LocalAuthentication
 import EllipticCurveKeyPair
 
 class ViewController: NSViewController {

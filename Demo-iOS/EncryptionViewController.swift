@@ -23,7 +23,6 @@
  */
 
 import UIKit
-import LocalAuthentication
 import EllipticCurveKeyPair
 
 class EncryptionViewController: UIViewController {
@@ -34,20 +33,18 @@ class EncryptionViewController: UIViewController {
             EllipticCurveKeyPair.logger = { print($0) }
             let publicAccessControl = EllipticCurveKeyPair.AccessControl(protection: kSecAttrAccessibleAlwaysThisDeviceOnly, flags: [])
             let privateAccessControl = EllipticCurveKeyPair.AccessControl(protection: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly, flags: {
-                return EllipticCurveKeyPair.Device.hasSecureEnclave ? [.userPresence, .privateKeyUsage] : [.userPresence]
+                return EllipticCurveKeyPair.Device.hasSecureEnclave ? [.privateKeyUsage] : [.userPresence]
             }())
             let config = EllipticCurveKeyPair.Config(
                 publicLabel: "no.agens.encrypt.public",
                 privateLabel: "no.agens.encrypt.private",
-                operationPrompt: "Decrypt",
                 publicKeyAccessControl: publicAccessControl,
                 privateKeyAccessControl: privateAccessControl,
                 token: .secureEnclaveIfAvailable)
             return EllipticCurveKeyPair.Manager(config: config)
         }()
     }
-    
-    var context: LAContext! = LAContext()
+
     var decrypted = true
 
     @IBOutlet weak var publicKeyTextView: UITextView!
@@ -102,7 +99,6 @@ class EncryptionViewController: UIViewController {
     }
     
     @IBAction func regeneratePublicKey(_ sender: Any) {
-        context = LAContext()
         do {
             try Shared.keypair.deleteKeyPair()
             let key = try Shared.keypair.publicKey().data()
@@ -155,7 +151,7 @@ class EncryptionViewController: UIViewController {
             guard #available(iOS 10.3, *) else {
                 throw "Can not encrypt on this device (must be iOS 10.3)"
             }
-            let result = try Shared.keypair.decrypt(encrypted, hash: .sha256, context: self.context)
+            let result = try Shared.keypair.decrypt(encrypted, hash: .sha256)
             guard let decrypted = String(data: result, encoding: .utf8) else {
                 throw "Could not convert decrypted data to string"
             }

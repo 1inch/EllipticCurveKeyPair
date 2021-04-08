@@ -7,7 +7,6 @@
 //
 
 import Cocoa
-import LocalAuthentication
 import EllipticCurveKeyPair
 
 class EncryptionViewController: NSViewController {
@@ -22,16 +21,13 @@ class EncryptionViewController: NSViewController {
             let config = EllipticCurveKeyPair.Config(
                 publicLabel: "no.agens.encrypt.public",
                 privateLabel: "no.agens.encrypt.private",
-                operationPrompt: "Decrypt message",
                 publicKeyAccessControl: publicAccessControl,
                 privateKeyAccessControl: privateAccessControl,
                 token: .secureEnclaveIfAvailable)
             return EllipticCurveKeyPair.Manager(config: config)
         }()
     }
-    
-    var context: LAContext! = LAContext()
-    
+
     @IBOutlet weak var publicKeyTextView: NSTextView!
     @IBOutlet weak var encryptDecryptTitleLabel: NSTextFieldCell!
     @IBOutlet weak var encryptDecryptTextView: NSTextView!
@@ -83,7 +79,6 @@ class EncryptionViewController: NSViewController {
     }
     
     @IBAction func regeneratePublicKey(_ sender: Any) {
-        context = LAContext()
         do {
             try Shared.keypair.deleteKeyPair()
             let key = try Shared.keypair.publicKey().data()
@@ -136,7 +131,7 @@ class EncryptionViewController: NSViewController {
             guard #available(iOS 10.3, *) else {
                 throw "Can not encrypt on this device (must be iOS 10.3)"
             }
-            let result = try Shared.keypair.decrypt(encrypted, context: self.context)
+            let result = try Shared.keypair.decrypt(encrypted)
             guard let decrypted = String(data: result, encoding: .utf8) else {
                 throw "Could not convert decrypted data to string"
             }

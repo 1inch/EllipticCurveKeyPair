@@ -7,7 +7,6 @@
 //
 
 import Cocoa
-import LocalAuthentication
 import EllipticCurveKeyPair
 
 class SignatureViewController: NSViewController {
@@ -23,15 +22,12 @@ class SignatureViewController: NSViewController {
             let config = EllipticCurveKeyPair.Config(
                 publicLabel: "no.agens.sign.public",
                 privateLabel: "no.agens.sign.private",
-                operationPrompt: "Sign transaction",
                 publicKeyAccessControl: publicAccessControl,
                 privateKeyAccessControl: privateAccessControl,
                 token: .secureEnclaveIfAvailable)
             return EllipticCurveKeyPair.Manager(config: config)
         }()
     }
-    
-    var context: LAContext! = LAContext()
     
     @IBOutlet weak var publicKeyTextView: NSTextView!
     @IBOutlet weak var digestTextView: NSTextView!
@@ -49,7 +45,6 @@ class SignatureViewController: NSViewController {
     }
     
     @IBAction func regeneratePublicKey(_ sender: Any) {
-        context = LAContext()
         do {
             try Shared.keypair.deleteKeyPair()
             let key = try Shared.keypair.publicKey().data()
@@ -80,7 +75,7 @@ class SignatureViewController: NSViewController {
             }
             return digest
         }, thenAsync: { digest in
-            return try Shared.keypair.sign(digest, hash: .sha256, context: self.context)
+            return try Shared.keypair.sign(digest, hash: .sha256)
         }, thenOnMain: { digest, signature in
             try Shared.keypair.verify(signature: signature, originalDigest: digest, hash: .sha256)
             try printVerifySignatureInOpenssl(manager: Shared.keypair, signed: signature, digest: digest, hashAlgorithm: "sha256")

@@ -23,7 +23,6 @@
  */
 
 import UIKit
-import LocalAuthentication
 import EllipticCurveKeyPair
 
 class SignatureViewController: UIViewController {
@@ -38,15 +37,12 @@ class SignatureViewController: UIViewController {
             let config = EllipticCurveKeyPair.Config(
                 publicLabel: "no.agens.sign.public",
                 privateLabel: "no.agens.sign.private",
-                operationPrompt: "Sign transaction",
                 publicKeyAccessControl: publicAccessControl,
                 privateKeyAccessControl: privateAccessControl,
                 token: .secureEnclaveIfAvailable)
             return EllipticCurveKeyPair.Manager(config: config)
         }()
     }
-    
-    var context: LAContext! = LAContext()
     
     @IBOutlet weak var publicKeyTextView: UITextView!
     @IBOutlet weak var digestTextView: UITextView!
@@ -64,7 +60,6 @@ class SignatureViewController: UIViewController {
     }
     
     @IBAction func regeneratePublicKey(_ sender: Any) {
-        context = LAContext()
         do {
             try Shared.keypair.deleteKeyPair()
             let key = try Shared.keypair.publicKey().data()
@@ -95,10 +90,10 @@ class SignatureViewController: UIViewController {
             }
             return digest
         }, thenAsync: { digest in
-            return try Shared.keypair.signUsingSha256(digest, context: self.context)
+            return try Shared.keypair.sign(digest, hash: .sha256)
         }, thenOnMain: { digest, signature in
             self.signatureTextView.text = signature.base64EncodedString()
-            try Shared.keypair.verifyUsingSha256(signature: signature, originalDigest: digest)
+            try Shared.keypair.verify(signature: signature, originalDigest: digest, hash: .sha256)
             try printVerifySignatureInOpenssl(manager: Shared.keypair, signed: signature, digest: digest, hashAlgorithm: "sha256")
         }, catchToMain: { error in
             self.signatureTextView.text = "Error: \(error)"
