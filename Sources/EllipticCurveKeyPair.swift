@@ -217,7 +217,6 @@ public enum EllipticCurveKeyPair {
         }
         
         public func sign(_ digest: Data, privateKey: PrivateKey, hash: Hash) throws -> Data {
-            Helper.logToConsoleIfExecutingOnMainThread()
             var error : Unmanaged<CFError>?
             let result = SecKeyCreateSignature(privateKey.underlying, hash.signatureMessage, digest as CFData, &error)
             guard let signature = result else {
@@ -247,7 +246,6 @@ public enum EllipticCurveKeyPair {
         }
         
         public func decrypt(_ encrypted: Data, privateKey: PrivateKey, hash: Hash) throws -> Data {
-            Helper.logToConsoleIfExecutingOnMainThread()
             var error : Unmanaged<CFError>?
             let result = SecKeyCreateDecryptedData(privateKey.underlying, hash.encryptionEciesEcdh, encrypted as CFData, &error)
             guard let data = result else {
@@ -255,20 +253,8 @@ public enum EllipticCurveKeyPair {
             }
             return data as Data
         }
-        
-        public static func logToConsoleIfExecutingOnMainThread() {
-            if Thread.isMainThread {
-                let _ = LogOnce.shouldNotBeMainThread
-            }
-        }
     }
-    
-    private struct LogOnce {
-        static var shouldNotBeMainThread: Void = {
-            print("[WARNING] \(EllipticCurveKeyPair.self): Decryption and signing should be done off main thread because LocalAuthentication may need the thread to show UI. This message is logged only once.")
-        }()
-    }
-    
+
     private struct Query {
         
         static func getKey(_ query: [String: Any]) throws -> SecKey {
