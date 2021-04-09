@@ -25,7 +25,6 @@
 
 import Foundation
 import Security
-import LocalAuthentication
 
 @available(OSX 10.12.2, iOS 11.0, *)
 public enum EllipticCurveKeyPair {
@@ -660,26 +659,6 @@ public enum EllipticCurveKeyPair {
     
     public enum Token {
         case secureEnclave
-        case keychain
-        
-        public static var secureEnclaveIfAvailable: Token {
-            return Device.hasSecureEnclave ? .secureEnclave : .keychain
-        }
-    }
-    
-    public enum Device {
-        
-        public static var hasBiometrics: Bool {
-            LAContext().canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
-        }
-        
-        public static var isSimulator: Bool {
-            return TARGET_OS_SIMULATOR != 0
-        }
-        
-        public static var hasSecureEnclave: Bool {
-            return hasBiometrics && !isSimulator
-        }
-        
+        case keychain        
     }
 }

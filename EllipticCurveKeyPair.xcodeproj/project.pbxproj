@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A69EF922620589F00CF80D1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A69EF912620589F00CF80D1 /* Device.swift */; };
+		2A69EF932620589F00CF80D1 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A69EF912620589F00CF80D1 /* Device.swift */; };
 		52D6D9871BEFF229002C0205 /* EllipticCurveKeyPair.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* EllipticCurveKeyPair.framework */; };
 		8933C7851EB5B820000D00A4 /* EllipticCurveKeyPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933C7841EB5B820000D00A4 /* EllipticCurveKeyPair.swift */; };
 		8933C7861EB5B820000D00A4 /* EllipticCurveKeyPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933C7841EB5B820000D00A4 /* EllipticCurveKeyPair.swift */; };
@@ -90,6 +92,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2A69EF912620589F00CF80D1 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		52D6D97C1BEFF229002C0205 /* EllipticCurveKeyPair.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EllipticCurveKeyPair.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6D9861BEFF229002C0205 /* EllipticCurveKeyPair-iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "EllipticCurveKeyPair-iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6DA0F1BF000BD002C0205 /* EllipticCurveKeyPair.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EllipticCurveKeyPair.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -177,6 +180,7 @@
 				A35A3FE01FB9CBE80093C12B /* Demo-macOS */,
 				A35A3FF41FB9CC1B0093C12B /* Demo-iOS */,
 				A35A40111FB9CC8D0093C12B /* Utils.swift */,
+				2A69EF912620589F00CF80D1 /* Device.swift */,
 				52D6D97D1BEFF229002C0205 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -547,6 +551,7 @@
 				A35A3FE41FB9CBE80093C12B /* ViewController.swift in Sources */,
 				A3FD3A961FBC54A900747A5F /* SignatureViewController.swift in Sources */,
 				A3FD3A981FBC54B700747A5F /* EncryptionViewController.swift in Sources */,
+				2A69EF922620589F00CF80D1 /* Device.swift in Sources */,
 				A35A3FE21FB9CBE80093C12B /* AppDelegate.swift in Sources */,
 				A309130D1FBB069A003A9046 /* Utils.swift in Sources */,
 			);
@@ -560,6 +565,7 @@
 				A35A3FF61FB9CC1B0093C12B /* AppDelegate.swift in Sources */,
 				A35A3FF81FB9CC1B0093C12B /* EncryptionViewController.swift in Sources */,
 				A35A40121FB9CC8D0093C12B /* Utils.swift in Sources */,
+				2A69EF932620589F00CF80D1 /* Device.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
