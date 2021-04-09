@@ -28,10 +28,6 @@
 		A35A400C1FB9CC660093C12B /* EllipticCurveKeyPair.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6DA0F1BF000BD002C0205 /* EllipticCurveKeyPair.framework */; };
 		A35A400D1FB9CC660093C12B /* EllipticCurveKeyPair.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6DA0F1BF000BD002C0205 /* EllipticCurveKeyPair.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A35A40121FB9CC8D0093C12B /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35A40111FB9CC8D0093C12B /* Utils.swift */; };
-		A381D7A81F98A5160069D88C /* SHA256.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381D7A61F98A5160069D88C /* SHA256.swift */; };
-		A381D7A91F98A5160069D88C /* SHA256.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381D7A61F98A5160069D88C /* SHA256.swift */; };
-		A381D7B11F98A58B0069D88C /* SHA256Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381D7AF1F98A58B0069D88C /* SHA256Test.swift */; };
-		A381D7B21F98A58B0069D88C /* SHA256Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381D7AF1F98A58B0069D88C /* SHA256Test.swift */; };
 		A3FD3A961FBC54A900747A5F /* SignatureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD3A951FBC54A900747A5F /* SignatureViewController.swift */; };
 		A3FD3A981FBC54B700747A5F /* EncryptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FD3A971FBC54B700747A5F /* EncryptionViewController.swift */; };
 		DD7502881C68FEDE006590AF /* EllipticCurveKeyPair.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6DA0F1BF000BD002C0205 /* EllipticCurveKeyPair.framework */; };
@@ -115,8 +111,6 @@
 		A35A40011FB9CC1B0093C12B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A35A40031FB9CC1B0093C12B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A35A40111FB9CC8D0093C12B /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		A381D7A61F98A5160069D88C /* SHA256.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SHA256.swift; sourceTree = "<group>"; };
-		A381D7AF1F98A58B0069D88C /* SHA256Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SHA256Test.swift; sourceTree = "<group>"; };
 		A3FD3A951FBC54A900747A5F /* SignatureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureViewController.swift; sourceTree = "<group>"; };
 		A3FD3A971FBC54B700747A5F /* EncryptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionViewController.swift; sourceTree = "<group>"; };
 		AD2FAA261CD0B6D800659CF4 /* EllipticCurveKeyPair.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = EllipticCurveKeyPair.plist; sourceTree = "<group>"; };
@@ -213,7 +207,6 @@
 			isa = PBXGroup;
 			children = (
 				8933C7841EB5B820000D00A4 /* EllipticCurveKeyPair.swift */,
-				A381D7A61F98A5160069D88C /* SHA256.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -222,7 +215,6 @@
 			isa = PBXGroup;
 			children = (
 				8933C7891EB5B82A000D00A4 /* EllipticCurveKeyPairTests.swift */,
-				A381D7AF1F98A58B0069D88C /* SHA256Test.swift */,
 			);
 			name = Tests;
 			path = Tests/EllipticCurveKeyPairTests;
@@ -528,7 +520,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A381D7A91F98A5160069D88C /* SHA256.swift in Sources */,
 				8933C7851EB5B820000D00A4 /* EllipticCurveKeyPair.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -537,7 +528,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A381D7B21F98A58B0069D88C /* SHA256Test.swift in Sources */,
 				8933C7901EB5B82D000D00A4 /* EllipticCurveKeyPairTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -546,7 +536,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A381D7A81F98A5160069D88C /* SHA256.swift in Sources */,
 				8933C7861EB5B820000D00A4 /* EllipticCurveKeyPair.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -578,7 +567,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A381D7B11F98A58B0069D88C /* SHA256Test.swift in Sources */,
 				8933C78F1EB5B82C000D00A4 /* EllipticCurveKeyPairTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
