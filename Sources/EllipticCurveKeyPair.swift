@@ -299,7 +299,6 @@ public enum EllipticCurveKeyPair {
             var privateKeyParams: [String: Any] = [
                 kSecAttrLabel as String: config.privateLabel,
                 kSecAttrIsPermanent as String: true,
-                kSecUseAuthenticationUI as String: kSecUseAuthenticationUIAllow,
                 ]
             if let privateKeyAccessGroup = config.privateKeyAccessGroup {
                 privateKeyParams[kSecAttrAccessGroup as String] = privateKeyAccessGroup
