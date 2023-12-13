@@ -31,6 +31,7 @@ public enum EllipticCurveKeyPair {
     
     public typealias Logger = (String) -> ()
     public static var logger: Logger?
+    public static var errorReporter: ((Swift.Error) -> ())?
         
     public struct Config {
         
@@ -106,6 +107,14 @@ public enum EllipticCurveKeyPair {
                 cachedPublicKey = key
                 return key
             } catch EllipticCurveKeyPair.Error.underlying(_, let underlying) where underlying.code == errSecItemNotFound {
+                if let keys = helper.fallbackToFirstAvailableKeyPair() {
+                    EllipticCurveKeyPair.errorReporter?(FallbackError.noPublicKeyButRestored)
+                    
+                    cachedPublicKey = keys.public
+                    cachedPrivateKey = keys.private
+                    return keys.public
+                }
+                
                 let keys = try helper.generateKeyPair()
                 cachedPublicKey = keys.public
                 cachedPrivateKey = keys.private
@@ -124,6 +133,14 @@ public enum EllipticCurveKeyPair {
                 cachedPrivateKey = key
                 return key
             } catch EllipticCurveKeyPair.Error.underlying(_, let underlying) where underlying.code == errSecItemNotFound {
+                if let keys = helper.fallbackToFirstAvailableKeyPair() {
+                    EllipticCurveKeyPair.errorReporter?(FallbackError.noPrivateKeyButRestored)
+                    
+                    cachedPublicKey = keys.public
+                    cachedPrivateKey = keys.private
+                    return keys.private
+                }
+                
                 let keys = try helper.generateKeyPair()
                 cachedPublicKey = keys.public
                 cachedPrivateKey = keys.private
@@ -177,16 +194,38 @@ public enum EllipticCurveKeyPair {
             return try Query.getPublicKey(labeled: config.publicLabel, accessGroup: config.publicKeyAccessGroup)
         }
         
+        public func getFirstPublicKey() throws -> PublicKey {
+            return try Query.getFirstPublicKey()
+        }
+        
         public func getPrivateKey() throws -> PrivateKey {
             try Query.getPrivateKey(labeled: config.privateLabel, accessGroup: config.privateKeyAccessGroup)
         }
         
-        public func getKeys() throws -> (`public`: PublicKey, `private`: PrivateKey) {
-            let privateKey = try getPrivateKey()
-            let publicKey = try getPublicKey()
-            return (public: publicKey, private: privateKey)
+        public func getFirstPrivateKey() throws -> PrivateKey {
+            try Query.getFirstPrivateKey()
         }
         
+        public func fallbackToFirstAvailableKeyPair() -> (`public`: PublicKey, `private`: PrivateKey)? {
+            let publicKey = try? getFirstPublicKey()
+            let privateKey = try? getFirstPrivateKey()
+            
+            if publicKey != nil && privateKey != nil {
+                return (public: publicKey!, private: privateKey!)
+            }
+            else if publicKey != nil {
+                // no privateKey
+                errorReporter?(FallbackError.noPrivateKeyButHasDetachedPublicKey)
+                return nil
+            }
+            else if privateKey != nil {
+                // no publicKey
+                errorReporter?(FallbackError.noPublicKeyButHasDetachedPrivateKey)
+                return nil
+            }
+            return nil
+        }
+                
         public func generateKeyPair() throws -> (`public`: PublicKey, `private`: PrivateKey) {
             guard config.privateLabel != config.publicLabel else{
                 throw Error.inconcistency(message: "Public key and private key can not have same label")
@@ -267,6 +306,16 @@ public enum EllipticCurveKeyPair {
             return result as! SecKey
         }
         
+        static func getKeys(_ query: [String: Any]) throws -> [SecKey] {
+            var raw: CFTypeRef?
+            logger?("SecItemCopyMatching: \(query)")
+            let status = SecItemCopyMatching(query as CFDictionary, &raw)
+            guard status == errSecSuccess, let result = raw else {
+                throw Error.osStatus(message: "Could not get multiple keys for query: \(query)", osStatus: status)
+            }
+            return result as! [SecKey]
+        }
+        
         static func publicKeyQuery(labeled: String, accessGroup: String?) -> [String:Any] {
             var params: [String:Any] = [
                 kSecClass as String: kSecClassKey,
@@ -280,6 +329,16 @@ public enum EllipticCurveKeyPair {
             return params
         }
         
+        static func anyPublicKeyQuery() -> [String:Any] {
+            let params: [String:Any] = [
+                kSecClass as String: kSecClassKey,
+                kSecAttrKeyClass as String: kSecAttrKeyClassPublic,
+                kSecReturnRef as String: true,
+                kSecMatchLimit as String: kSecMatchLimitAll,
+            ]
+            return params
+        }
+        
         static func privateKeyQuery(labeled: String, accessGroup: String?) -> [String: Any] {
             var params: [String:Any] = [
                 kSecClass as String: kSecClassKey,
@@ -290,6 +349,16 @@ public enum EllipticCurveKeyPair {
             if let accessGroup = accessGroup {
                 params[kSecAttrAccessGroup as String] = accessGroup
             }
+            return params
+        }
+        
+        static func anyPrivateKeyQuery() -> [String: Any] {
+            let params: [String: Any] = [
+                kSecClass as String: kSecClassKey,
+                kSecAttrKeyClass as String: kSecAttrKeyClassPrivate,
+                kSecReturnRef as String: true,
+                kSecMatchLimit as String: kSecMatchLimitAll,
+            ]
             return params
         }
         
@@ -344,9 +413,23 @@ public enum EllipticCurveKeyPair {
             return PublicKey(try getKey(query))
         }
         
+        static func getFirstPublicKey() throws -> PublicKey {
+            let query = anyPublicKeyQuery()
+            let keys = try getKeys(query)
+            let first = keys.first!
+            return PublicKey(first)
+        }
+        
         static func getPrivateKey(labeled: String, accessGroup: String?) throws -> PrivateKey {
             let query = privateKeyQuery(labeled: labeled, accessGroup: accessGroup)
             return PrivateKey(try getKey(query))
+        }
+        
+        static func getFirstPrivateKey() throws -> PrivateKey {
+            let query = anyPrivateKeyQuery()
+            let keys = try getKeys(query)
+            let first = keys.first!
+            return PrivateKey(first)
         }
         
         static func deletePublicKey(labeled: String, accessGroup: String?) throws {
@@ -563,6 +646,13 @@ public enum EllipticCurveKeyPair {
             }
             return accessControl
         }
+    }
+    
+    public enum FallbackError: Int, Swift.Error {
+        case noPublicKeyButRestored = 1
+        case noPrivateKeyButRestored = 2
+        case noPublicKeyButHasDetachedPrivateKey = 3
+        case noPrivateKeyButHasDetachedPublicKey = 4
     }
     
     public enum Error: LocalizedError {
